@@ -112,6 +112,42 @@ const NewBoards = (props) => {
       subMainText: "종로 3가 최고의 맛집 리스트를 소개합니다!!",
       views: 0,
     },
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
   ]);
 
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
@@ -242,8 +278,16 @@ const NewBoards = (props) => {
 
 const PaginationControls = ({ currentPage, totalPageCount, paginate }) => {
   const displayPageNumbers = 5;
-  const halfDisplayPageNumbers = Math.floor(displayPageNumbers / 2);
-  const startPageNumber = Math.max(1, currentPage - halfDisplayPageNumbers);
+  let startPageNumber = 1;
+
+  // 현재 페이지가 마지막 단위 페이지보다 크면, 시작 페이지 번호를 조정
+  if (currentPage % displayPageNumbers === 0) {
+    startPageNumber = currentPage - (displayPageNumbers - 1);
+  } else {
+    startPageNumber =
+      Math.floor(currentPage / displayPageNumbers) * displayPageNumbers + 1;
+  }
+
   const endPageNumber = Math.min(
     totalPageCount,
     startPageNumber + displayPageNumbers - 1
@@ -254,7 +298,7 @@ const PaginationControls = ({ currentPage, totalPageCount, paginate }) => {
       {Array.from({ length: endPageNumber - startPageNumber + 1 }, (_, i) => (
         <PaginationItem
           key={startPageNumber + i}
-          isActive={startPageNumber + i === currentPage} // 현재 페이지 여부에 따라 isActive prop 설정
+          isActive={startPageNumber + i === currentPage}
           onClick={() => paginate(startPageNumber + i)}
         >
           {startPageNumber + i}
@@ -412,7 +456,8 @@ const Pagination = styled.div`
   align-items: center; /* 세로 가운데 정렬 */
   margin-top: 63%; /* 상단 여백 */
   margin-bottom: 61px; /* 하단 여백 */
-  margin-left: 43.5%; /* 왼쪽 여백 */
+  left: 49.7%; /* 왼쪽 여백을 50%로 설정하여 가운데 정렬 */
+  transform: translateX(-50%); /* 가로 방향으로 -50% 이동하여 가운데 정렬 */
   z-index: 2; /* 층 위치 설정 */
 `;
 
