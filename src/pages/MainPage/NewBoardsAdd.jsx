@@ -5,7 +5,7 @@ const projectsData = [
     subEndText: "마감일 | 2024.04.26",
     subMainText: "[FrontEnd, BackEnd] 웹페이지 개발자 구인합니다!",
   },
-  // 다른 모집 글 데이터를 여기에 추가...
+  // 다른 모집 글 데이터를 여기에 추가...test
 ];
 
 export default projectsData;
