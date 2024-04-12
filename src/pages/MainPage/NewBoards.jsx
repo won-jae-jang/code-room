@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const NewBoards = (props) => {
+const NewBoards = () => {
   const [views, setViews] = useState([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
   const [projects, setProjects] = useState([
     {
@@ -194,9 +194,36 @@ const NewBoards = (props) => {
     });
   };
 
-  // 프로젝트를 렌더링하는 함수
   const renderNewBox = (index) => {
+    // projects 배열이 비어있는 경우, 모든 페이지에서 메시지를 표시합니다.
+    if (projects.length === 1 && projects[0].isEmpty) {
+      // 첫 번째 요소만 체크하여 중복 메시지 방지
+      if (index === 0) {
+        return (
+          <div
+            style={{
+              width: "600px",
+              height: "100px",
+              fontSize: "50px",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              color: "red",
+              margin: "58%",
+              marginTop: "800px",
+            }}
+          >
+            <p>검색된 프로젝트가 없습니다!</p>
+          </div>
+        );
+      } else {
+        // 첫 번째 요소가 아니면 렌더링하지 않음
+        return null;
+      }
+    }
+
     const project = currentProjects[index];
+
     return (
       <NewBox
         key={index}
@@ -220,23 +247,45 @@ const NewBoards = (props) => {
     );
   };
 
+  const [searchValue, setSearchValue] = useState(""); // 검색어 상태
+
   const handleSearchChange = (e) => {
     setSearchValue(e.target.value); // 검색어 업데이트
   };
 
-  const handleClearSearch = () => {
-    setSearchValue(""); // 검색어 비우기
+  const handleSearch = async () => {
+    await AddProjects();
   };
 
-  const [searchValue, setSearchValue] = useState(""); // 검색어 상태
-  // ClearButton 스타일드 컴포넌트: 입력값 지우기 버튼 스타일
-  const ClearButton = styled.button`
-    margin-left: 48%; /* 왼쪽 여백 */
-    margin-top: -6.9%; /* 상단 여백 */
-    position: absolute; /* 위치 설정 */
-    border-radius: 10px; /* 테두리 반경 설정 */
-    border-color: rgb(91, 231, 100); /* 테두리 색상 설정 */
-  `;
+  const handleClearSearch = async () => {
+    setSearchValue(""); // 검색어 비우기
+    console.log("검색어가 비워졌습니다."); // 확인을 위한 콘솔 로그
+  };
+
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      // 엔터 키를 눌렀을 때 검색 실행
+      handleSearch();
+    }
+  };
+
+  const AddProjects = async () => {
+    try {
+      const response = await axios.get(
+        searchValue ? `/search?query=${searchValue}` : "/projects"
+      );
+      // 응답 데이터가 비어있는 경우 특별한 메시지를 포함하는 객체를 배열에 넣습니다.
+      if (response.data.length === 0) {
+        setProjects([{ isEmpty: true }]);
+      } else {
+        setProjects(response.data);
+      }
+    } catch (error) {
+      console.error("검색된 프로젝트가 없습니다!", error);
+      // 오류 발생시에도 비슷한 방식으로 처리할 수 있습니다.
+      setProjects([{ isEmpty: true }]);
+    }
+  };
 
   return (
     <div>
@@ -250,6 +299,7 @@ const NewBoards = (props) => {
               placeholder="🔍   제목, 글 내용을 검색해보세요."
               value={searchValue} // 검색어 입력값으로 설정
               onChange={handleSearchChange} // 검색어 입력시 이벤트 핸들러
+              onKeyPress={handleKeyPress} // 엔터 키 감지 이벤트 핸들러 추가
             />
             {searchValue && ( // 검색어가 있을 때만 X 아이콘 표시
               <ClearButton onClick={handleClearSearch}>✖️</ClearButton>
@@ -342,9 +392,17 @@ const NewSearchBox = styled.div`
     padding: 0; /* 내부 여백 없음 */
     font-weight: 700; /* 글꼴 두껍게 */
     font-size: 16px; /* 글꼴 크기 */
-    width: 150%; /* 너비 설정 */
+    width: 120%; /* 너비 설정 */
     position: relative; /* 상대 위치 */
   }
+`;
+
+const ClearButton = styled.button`
+  margin-left: 48%; /* 왼쪽 여백 */
+  margin-top: -6.9%; /* 상단 여백 */
+  position: absolute; /* 위치 설정 */
+  border-radius: 10px; /* 테두리 반경 설정 */
+  border-color: rgb(91, 231, 100); /* 테두리 색상 설정 */
 `;
 
 // NewOutLine 스타일드 컴포넌트: 전체 보드 영역 스타일
