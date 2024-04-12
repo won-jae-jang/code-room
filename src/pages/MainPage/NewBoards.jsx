@@ -272,7 +272,7 @@ const NewBoards = () => {
   const AddProjects = async () => {
     try {
       const response = await axios.get(
-        searchValue ? `/search?query=${searchValue}` : "/projects"
+        searchValue ? `/search?query=${searchValue}` : null
       );
       // 응답 데이터가 비어있는 경우 특별한 메시지를 포함하는 객체를 배열에 넣습니다.
       if (response.data.length === 0) {
