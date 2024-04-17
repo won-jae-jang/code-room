@@ -25,7 +25,7 @@ const detailview = async (req, res) => {
 };
 const recruitfieldSerch = async (req, res) =>{
     try {
-        console.log("모집분야별 실행");
+        console.log("모집분야별 실행  ");
         const result = await postSer.recruitfieldSerch(req.params.recruitfield);      
         res.status(200).json({result});
     } catch (error) {
